@@ -6,6 +6,7 @@ import { api } from '../services/api';
 export default function DashboardPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadProjects();
@@ -15,8 +16,10 @@ export default function DashboardPage() {
     try {
       const projectsData = await api.getProjects();
       setProjects(projectsData);
+      setError(null);
     } catch (error) {
       console.error('Error loading projects:', error);
+      setError('Failed to connect to server. Please make sure the server is running.');
     } finally {
       setIsLoading(false);
     }
@@ -34,6 +37,20 @@ export default function DashboardPage() {
       console.error('Error deleting project:', error);
     }
   };
+
+  if (error) {
+    return (
+      <div className="text-center p-4">
+        <p className="text-red-600">{error}</p>
+        <button
+          onClick={() => loadProjects()}
+          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return <div>Loading projects...</div>;

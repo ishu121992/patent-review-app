@@ -8,6 +8,7 @@ const authenticatedFetch = async (url: string, options: RequestInit = {}) => {
   const token = localStorage.getItem('authToken');
   const defaultHeaders = {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 
@@ -23,6 +24,7 @@ const authenticatedFetch = async (url: string, options: RequestInit = {}) => {
         ...headers,
         ...options.headers,
       },
+      mode: 'cors',
       credentials: 'include',
     });
 
